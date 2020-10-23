@@ -1,0 +1,4 @@
+include ':commonlibrary'
+include ':Tmall'
+include ':app'
+rootProject.name = "TmallCoin"
