@@ -1,8 +1,10 @@
 package com.yorhp.tmall.service;
 
+import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.os.SystemClock;
@@ -15,6 +17,7 @@ import android.widget.ImageView;
 
 import com.display.loglibrary.LogUtil;
 import com.yorhp.commonlibrary.app.BaseAccessbilityService;
+import com.yorhp.commonlibrary.util.ScreenUtil;
 import com.yorhp.commonlibrary.util.threadpool.AppExecutors;
 import com.yorhp.recordlibrary.ScreenShotUtil;
 import com.yorhp.tmall.R;
@@ -198,8 +201,12 @@ public class TmallService extends BaseAccessbilityService {
         Rect rect = result.getRect();
         //点击去浏览
         clickOnScreen(rect.left + startX, rect.top + startY, 10, null);
-        //等待页面加载3秒+浏览18秒
-        SystemClock.sleep(22 * 1000);
+        //等待页面加载3秒
+        SystemClock.sleep(3 * 1000);
+        //划一下
+        performScrollDownward((int) (ScreenUtil.SCREEN_HEIGHT*0.7), ScreenUtil.SCREEN_HEIGHT / 2, null);
+        //浏览17秒
+        SystemClock.sleep(20 * 1000);
         //返回
         performBackClick();
     }
@@ -300,4 +307,15 @@ public class TmallService extends BaseAccessbilityService {
         ToastUtil.showLong("请先打开领喵币中心，然后点击屏幕右上方的五角星");
 
     }
+
+    /**
+     * 模拟界面向下滑操作
+     */
+    public void performScrollDownward(int start, int distance, AccessibilityService.GestureResultCallback callback) {
+        Path path = new Path();
+        path.moveTo(ScreenUtil.SCREEN_WIDTH / 2, start);
+        path.lineTo(ScreenUtil.SCREEN_WIDTH / 2, start - distance);
+        gestureOnScreen(path, 0, 100, callback);
+    }
+
 }
